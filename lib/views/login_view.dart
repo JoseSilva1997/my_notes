@@ -1,8 +1,9 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/firebase_options.dart';
-import 'package:my_notes/utils/log_util.dart';
 
 
 class LoginView extends StatefulWidget {
@@ -86,22 +87,27 @@ class _LoginViewState extends State<LoginView> {
 void loginUser() async {
   final email = _email.text;
   final password = _password.text;
-  final auth;
 
   try {
-    auth = await FirebaseAuth.instance.signInWithEmailAndPassword(
+    log('Attempting to log in with email: $email and password: $password', name: 'LoginView');
+    final auth = await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
-    LogUtil().log('User logged in: ${auth.user?.email}');
+    log('User logged in: ${auth.user?.email}');
   } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
-      LogUtil().log('No user found');
-    } else if (e.code == 'wrong-password') {
-      LogUtil().log('Wrong password');
-    } else {
-      LogUtil().log('Error: ${e.code}');
+    switch (e.code) {
+      case 'user-not-found':
+        log('No user found for that email.');
+        break;
+      case 'wrong-password':
+        log('Wrong password provided for that user.');
+        break;
+      default:
+        log('Error: ${e.message} (${e.code})');
     }
+  } catch (e) {
+    log('An unexpected error occurred: $e');
   }
 }
 
