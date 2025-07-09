@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "748419744417",
+    "project_id": "josesilva1997-my-notes",
+    "storage_bucket": "josesilva1997-my-notes.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:748419744417:android:3d28937ba8a2dd061fa6e0",
+        "android_client_info": {
+          "package_name": "io.github.JoseSilva1997.fluttertutorial.my_notes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_jAqVnsxi_GIPrcwqJu58HmXTQqETzNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
