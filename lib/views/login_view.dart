@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/firebase_options.dart';
+import 'package:my_notes/views/register_view.dart';
 
 
 class LoginView extends StatefulWidget {
@@ -36,8 +37,16 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
-        backgroundColor: Colors.blue,)
+        centerTitle: true,
+        title: const Text(
+          'Login',
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Comic Sans MS',
+          ),
+        ),
+        backgroundColor: Colors.transparent,)
         ,
       body: 
       FutureBuilder(
@@ -46,7 +55,7 @@ class _LoginViewState extends State<LoginView> {
           switch (asyncSnapshot.connectionState) {
             case ConnectionState.done:
               return Container(
-                margin: EdgeInsetsGeometry.all(40),
+                margin: EdgeInsetsGeometry.all(40.0),
                 child: Column(
                   spacing: 20,
                   children: [
@@ -57,6 +66,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     enableSuggestions: false,
                     autocorrect: false,
+
                     keyboardType: TextInputType.emailAddress,
                     ),
                   TextField(
@@ -73,7 +83,28 @@ class _LoginViewState extends State<LoginView> {
                       style: ButtonStyle(),
                       child:  const Text('Login'),
                     ),
-                  ],
+                    Padding(padding: EdgeInsetsGeometry.all(20)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                      const Text('Not registered yet?'),
+                      TextButton(
+                        style: ButtonStyle(
+                          overlayColor: WidgetStateProperty.all<Color>(Colors.transparent),
+                          padding: WidgetStateProperty.all<EdgeInsets>(
+                            const EdgeInsets.symmetric(horizontal: 3.0, vertical: 0),
+                          ),
+                        ),
+                        child: const Text('Register here!'),
+                        onPressed: () => {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const RegisterView(),
+                          ),
+                        )
+                      },)
+                    ],
+                    ),],
                 ),
               );
           default:
@@ -110,5 +141,4 @@ void loginUser() async {
     log('An unexpected error occurred: $e');
   }
 }
-
 }
