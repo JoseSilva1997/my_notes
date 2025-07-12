@@ -78,6 +78,7 @@ class _LoginViewState extends State<LoginView> {
                       decoration: InputDecoration(
                         labelText: 'Password',
                         labelStyle: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w500, fontSize: 18.0),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
                         hintText: 'Enter your password'
                       ),
                       obscureText: true,
@@ -131,7 +132,7 @@ class _LoginViewState extends State<LoginView> {
                           ),
                           child: const Text('Sign up', style: TextStyle(color: Colors.redAccent,)),
                           onPressed: () => {
-                          Navigator.of(context).push(
+                          Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => const RegisterView(),
                             ),
@@ -178,20 +179,28 @@ class _LoginViewState extends State<LoginView> {
                             log('Google sign-in failed: $e', name: 'LoginView');
                           }
                         },
-                        icon: const Icon(Icons.login),
+                        icon: Image.asset(
+                          'assets/google_logo.png',
+                          height: 24,
+                          width: 24,
+                        ),
                         label: const Text('Sign in with Google'),
                         style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent),
-                          foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                          backgroundColor: WidgetStateProperty.all<Color>(Colors.transparent),
+                          shadowColor: WidgetStateProperty.all(Colors.transparent),
+                          foregroundColor: WidgetStateProperty.all<Color>(Colors.black87),
                           minimumSize: WidgetStateProperty.all<Size>(
                             const Size.fromHeight(48), // set button height
-                          ),
+                            ),
+                            side: WidgetStateProperty.all<BorderSide>(
+                            const BorderSide(color: Colors.grey, width: 1.0),
+                            ),
                           padding: WidgetStateProperty.all<EdgeInsets>(
                             const EdgeInsets.symmetric(vertical: 14.0),
                           ),
                           shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius: BorderRadius.circular(100.0),
                             ),
                           ),
                         ),
