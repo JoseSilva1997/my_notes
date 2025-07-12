@@ -102,7 +102,6 @@ void registerUser() async {
         log('Invalid email');
         break;
       default:
-        log('Error: ${e.code}');
     }
   }
 }

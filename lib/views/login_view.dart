@@ -36,18 +36,6 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Login',
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          fontFamily: 'Comic Sans MS',
-          ),
-        ),
-        backgroundColor: Colors.transparent,)
-        ,
       body: 
       FutureBuilder(
         future: Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,),
@@ -56,55 +44,160 @@ class _LoginViewState extends State<LoginView> {
             case ConnectionState.done:
               return Container(
                 margin: EdgeInsetsGeometry.all(40.0),
-                child: Column(
-                  spacing: 20,
-                  children: [
-                  TextField(
-                    controller: _email,
-                    decoration: InputDecoration(
-                      hintText: 'Enter your email',
-                    ),
-                    enableSuggestions: false,
-                    autocorrect: false,
-
-                    keyboardType: TextInputType.emailAddress,
-                    ),
-                  TextField(
-                    controller: _password,
-                    decoration: InputDecoration(
-                      hintText: 'Enter your password'
-                    ),
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    ),
-                    TextButton(
-                      onPressed: loginUser,
-                      style: ButtonStyle(),
-                      child:  const Text('Login'),
-                    ),
-                    Padding(padding: EdgeInsetsGeometry.all(20)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                      const Text('Not registered yet?'),
+                child: SingleChildScrollView(
+                  child: Column(
+                    spacing: 25.0,
+                    children: [
+                      Container(
+                        margin: EdgeInsetsGeometry.only(top: 60.0, bottom: 20.0),
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Text(
+                            'Sign in',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      TextField(
+                      controller: _email,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        labelStyle: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w500, fontSize: 18.0),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        hintText: 'Enter your email',
+                      ),
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      keyboardType: TextInputType.emailAddress,
+                      ),
+                    TextField(
+                      controller: _password,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        labelStyle: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w500, fontSize: 18.0),
+                        hintText: 'Enter your password'
+                      ),
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      ),
                       TextButton(
+                        onPressed: () {
+                          log('Forgot my password!');
+                        },
                         style: ButtonStyle(
                           overlayColor: WidgetStateProperty.all<Color>(Colors.transparent),
                           padding: WidgetStateProperty.all<EdgeInsets>(
                             const EdgeInsets.symmetric(horizontal: 3.0, vertical: 0),
                           ),
                         ),
-                        child: const Text('Register here!'),
-                        onPressed: () => {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const RegisterView(),
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: const Text('Forgot your password?', style: TextStyle(color: Colors.black87,)),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: loginUser,
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all<Color>(Colors.redAccent),
+                          foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                            minimumSize: WidgetStateProperty.all<Size>(
+                            const Size.fromHeight(48), // set button height
+                            ),
+                            padding: WidgetStateProperty.all<EdgeInsets>(
+                            const EdgeInsets.symmetric(vertical: 14.0),
+                            ),
+                            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            ),
                           ),
-                        )
-                      },)
-                    ],
-                    ),],
+                        child:  const Text('Sign in', style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                        const Text('Not registered yet?'),
+                        TextButton(
+                          style: ButtonStyle(
+                            overlayColor: WidgetStateProperty.all<Color>(Colors.transparent),
+                            padding: WidgetStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.symmetric(horizontal: 3.0, vertical: 0),
+                            ),
+                          ),
+                          child: const Text('Sign up', style: TextStyle(color: Colors.redAccent,)),
+                          onPressed: () => {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const RegisterView(),
+                            ),
+                          )
+                        },)
+                      ],
+                      ),
+                      const SizedBox(height: 5.0,),
+                        Row(
+                        children: [
+                          Expanded(
+                          child: Divider(
+                            color: Colors.grey[400],
+                            thickness: 1,
+                          ),
+                          ),
+                          Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Text(
+                            'OR',
+                            style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          ),
+                          Expanded(
+                          child: Divider(
+                            color: Colors.grey[400],
+                            thickness: 1,
+                          ),
+                          ),
+                        ],
+                        ),
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          try {
+                            log('Attempting to sign in with Google', name: 'LoginView');
+                            final provider = GoogleAuthProvider();
+                            final auth = await FirebaseAuth.instance.signInWithPopup(provider);
+                            log('User signed in with Google: ${auth.user?.email}');
+                          } catch (e) {
+                            log('Google sign-in failed: $e', name: 'LoginView');
+                          }
+                        },
+                        icon: const Icon(Icons.login),
+                        label: const Text('Sign in with Google'),
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent),
+                          foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                          minimumSize: WidgetStateProperty.all<Size>(
+                            const Size.fromHeight(48), // set button height
+                          ),
+                          padding: WidgetStateProperty.all<EdgeInsets>(
+                            const EdgeInsets.symmetric(vertical: 14.0),
+                          ),
+                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      ],
+                  ),
                 ),
               );
           default:
