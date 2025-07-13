@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/firebase_options.dart';
+import 'package:my_notes/views/main_view.dart';
 import 'package:my_notes/views/register_view.dart';
 import 'package:my_notes/widgets/page_title.dart';
 
@@ -221,6 +222,7 @@ void loginUser() async {
       password: password,
     );
     log('User logged in: ${auth.user?.email}');
+    navigateToMainPage();
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'user-not-found':
@@ -235,5 +237,13 @@ void loginUser() async {
   } catch (e) {
     log('An unexpected error occurred: $e');
   }
+}
+
+void navigateToMainPage() {
+    Navigator.of(context).pushReplacement(
+    MaterialPageRoute(
+          builder: (context) => const MainView(),
+        )
+  );
 }
 }
