@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/firebase_options.dart';
 import 'package:my_notes/views/register_view.dart';
+import 'package:my_notes/widgets/page_title.dart';
 
 
 class LoginView extends StatefulWidget {
@@ -35,7 +36,12 @@ class _LoginViewState extends State<LoginView> {
   
   @override
   Widget build(BuildContext context) {
+    const pageTitle = PageTitle('Sign in');
     return Scaffold(
+      appBar: AppBar(
+        title: pageTitle,
+        toolbarHeight: pageTitle.getHeight(),
+      ),
       body: 
       FutureBuilder(
         future: Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,),
@@ -48,19 +54,6 @@ class _LoginViewState extends State<LoginView> {
                   child: Column(
                     spacing: 25.0,
                     children: [
-                      Container(
-                        margin: EdgeInsetsGeometry.only(top: 60.0, bottom: 20.0),
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Text(
-                            'Sign in',
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
                       TextField(
                       controller: _email,
                       decoration: InputDecoration(

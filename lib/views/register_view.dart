@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/firebase_options.dart';
 import 'package:my_notes/views/login_view.dart';
+import 'package:my_notes/widgets/page_title.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -27,7 +28,12 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
+    const pageTitle = PageTitle('Sign up');
     return Scaffold(
+      appBar: AppBar(
+        title: pageTitle,
+        toolbarHeight: pageTitle.getHeight(),
+      ),
       body: 
       FutureBuilder(
         future: Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,),
@@ -40,19 +46,6 @@ class _RegisterViewState extends State<RegisterView> {
                   child: Column(
                     spacing: 25.0,
                     children: [
-                      Container(
-                        margin: EdgeInsetsGeometry.only(top: 60.0, bottom: 20.0),
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Text(
-                            'Sign up',
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
                     TextField(
                       controller: _email,
                       decoration: InputDecoration(
