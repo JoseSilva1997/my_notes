@@ -1,11 +1,13 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/firebase_options.dart';
 import 'package:my_notes/views/login_view.dart';
 import 'package:my_notes/widgets/page_title.dart';
+import 'package:my_notes/models/user_model.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -24,6 +26,67 @@ class _RegisterViewState extends State<RegisterView> {
     _password.dispose();
     _confirmPassword.dispose();
     super.dispose();
+  }
+
+  Future<void> registerUser() async {
+  final email = _email.text.trim();
+  final password = _password.text;
+  final confirmation = _confirmPassword.text;
+
+  if (password != confirmation) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Passwords do not match.')),
+    );
+    return;
+  }
+
+  try {
+    final userCredentials = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    log('User registered: $email', name: 'RegisterView');
+
+    // Create a user profile in Firestore
+    await addUserToFirestore(userCredentials);
+
+  } on FirebaseAuthException catch (e) {
+    String message;
+    switch (e.code) {
+      case 'weak-password':
+        message = 'Weak password';
+        break;
+      case 'email-already-in-use':
+        message = 'Email already in use';
+        break;
+      case 'invalid-email':
+        message = 'Invalid email';
+        break;
+      default:
+        message = 'Registration failed';
+    }
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+    log(message, name: 'RegisterView');
+  }
+}
+
+  Future<void> addUserToFirestore(UserCredential userCredentials) async {
+    // Create a user profile in Firestore
+    final user = userCredentials.user;
+    if (user != null) {
+      final userProfile = UserProfile(
+        id: user.uid,
+        email: user.email ?? '',
+      );
+    await FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .set(userProfile.toFirestore());
+    }
   }
 
   @override
@@ -198,48 +261,5 @@ class _RegisterViewState extends State<RegisterView> {
         }
       )
     );   
-}
-
-Future<void> registerUser() async {
-  final email = _email.text.trim();
-  final password = _password.text;
-  final confirmation = _confirmPassword.text;
-
-  if (password != confirmation) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Passwords do not match.')),
-    );
-    return;
-  }
-
-  try {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    log('User registered: $email', name: 'RegisterView');
-  } on FirebaseAuthException catch (e) {
-    String message;
-    switch (e.code) {
-      case 'weak-password':
-        message = 'Weak password';
-        break;
-      case 'email-already-in-use':
-        message = 'Email already in use';
-        break;
-      case 'invalid-email':
-        message = 'Invalid email';
-        break;
-      default:
-        message = 'Registration failed';
-    }
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-    log(message, name: 'RegisterView');
-  }
-}
-    
+}  
 } 
