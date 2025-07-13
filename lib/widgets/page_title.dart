@@ -18,7 +18,7 @@ class PageTitle extends StatelessWidget {
     final marginSize = margin.collapsedSize.height;
     return marginSize + fontSize;
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Container(

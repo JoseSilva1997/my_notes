@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:my_notes/views/to_do_view.dart';
 import 'package:my_notes/widgets/page_title.dart';
 
 class MainView extends StatefulWidget{
@@ -17,7 +18,7 @@ class _MainViewState extends State<MainView> {
   static const List<Widget> _pages = <Widget>[
     Center(child: Text('Main Page')),
     Center(child: Text('My Notes')),
-    Center(child: Text('To-Do List')),
+    ToDoPage(),
   ];
 
   static const List<String> _titles = [
@@ -40,7 +41,10 @@ class _MainViewState extends State<MainView> {
         title: pageTitle,
         toolbarHeight: pageTitle.getHeight(),
       ),
-      body: _pages[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
